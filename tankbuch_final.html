@@ -647,10 +647,10 @@ let state = {
 };
 
 function save() {
-  localStorage.setItem('tankbuch_v2', JSON.stringify(state));
+  localStorage.setItem('tankbuch_v3', JSON.stringify(state));
 }
 function load() {
-  const d = localStorage.getItem('tankbuch_v2');
+  const d = localStorage.getItem('tankbuch_v3');
   if (d) state = JSON.parse(d);
 }
 
