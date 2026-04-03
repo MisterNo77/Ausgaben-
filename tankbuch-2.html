@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Tankbuch</title>
+<meta name="theme-color" content="#0a0a0f">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Tankbuch">
+<script>
+(function(){
+  const m={name:"Tankbuch",short_name:"Tankbuch",start_url:location.pathname,display:"standalone",background_color:"#0a0a0f",theme_color:"#4f9cf9",icons:[{src:"data:image/svg+xml,"+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="%230a0a0f"/><text y="68" x="50" text-anchor="middle" font-size="55">⛽</text></svg>'),sizes:"192x192",type:"image/svg+xml"}]};
+  const b=new Blob([JSON.stringify(m)],{type:"application/json"});
+  document.write('<link rel="manifest" href="'+URL.createObjectURL(b)+'">');
+})();
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0a0f;--sf:#12121a;--sf2:#1a1a26;--bd:#2a2a3a;--tx:#e8e8f0;--mu:#666680;--bl:#4f9cf9;--bld:#1a3a6a;--cy:#34d399;--cyd:#0d3d2a;--or:#fb923c;--ord:#3d1f0d;--pu:#a78bfa;--pud:#2d1a5a;--ye:#fbbf24;--yed:#3d2d0d;--rd:#f87171;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--tx);font-family:'DM Sans',sans-serif;min-height:100dvh;padding-bottom:90px;}
+.hdr{padding:18px 20px 0;position:sticky;top:0;z-index:50;background:var(--bg);}
+.hdr-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;}
+.hdr h1{font-family:'Space Mono',monospace;font-size:24px;font-weight:700;}
+.hdr-sub{font-size:11px;color:var(--mu);font-family:'Space Mono',monospace;text-transform:uppercase;letter-spacing:.05em;}
+.yr-badge{background:var(--bld);color:var(--bl);font-family:'Space Mono',monospace;font-size:11px;padding:4px 10px;border-radius:20px;border:1px solid var(--bl);cursor:pointer;}
+.filter-bar{display:flex;gap:8px;padding:12px 20px;overflow-x:auto;scrollbar-width:none;}
+.chip{flex-shrink:0;padding:5px 13px;border-radius:20px;border:1px solid var(--bd);background:var(--sf);color:var(--mu);font-size:12px;cursor:pointer;transition:all .15s;}
+.chip.active{border-color:var(--bl);background:var(--bld);color:var(--bl);}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 20px 4px;}
+.card{background:var(--sf);border-radius:16px;padding:14px;border:1px solid var(--bd);position:relative;overflow:hidden;}
+.card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;border-radius:0 0 16px 16px;}
+.card.bl::after{background:var(--bl);}.card.cy::after{background:var(--cy);}.card.or::after{background:var(--or);}.card.pu::after{background:var(--pu);}
+.cl{font-size:9px;font-family:'Space Mono',monospace;text-transform:uppercase;color:var(--mu);margin-bottom:5px;letter-spacing:.08em;}
+.cv{font-family:'Space Mono',monospace;font-size:22px;font-weight:700;line-height:1;}
+.card.bl .cv{color:var(--bl);}.card.cy .cv{color:var(--cy);}.card.or .cv{color:var(--or);}.card.pu .cv{color:var(--pu);}
+.sec{padding:16px 20px 8px;font-size:10px;font-family:'Space Mono',monospace;text-transform:uppercase;color:var(--mu);display:flex;justify-content:space-between;align-items:center;}
+.list{padding:0 20px;display:flex;flex-direction:column;gap:8px;}
+.item{background:var(--sf);border-radius:14px;border:1px solid var(--bd);padding:13px 15px;}
+.item-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;}
+.item-date{font-family:'Space Mono',monospace;font-size:10px;color:var(--mu);}
+.item-price{font-family:'Space Mono',monospace;font-size:18px;font-weight:700;color:var(--bl);}
+.item-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;}
+.ig-val{font-family:'Space Mono',monospace;font-size:13px;font-weight:700;}
+.ig-lbl{font-size:9px;color:var(--mu);text-transform:uppercase;letter-spacing:.05em;}
+.item-note{font-size:11px;color:var(--mu);margin-top:6px;padding-top:6px;border-top:1px solid var(--bd);}
+.item-actions{display:flex;gap:6px;margin-top:8px;}
+.del-btn{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);color:var(--rd);padding:4px 10px;border-radius:8px;font-size:11px;cursor:pointer;}
+.empty{text-align:center;padding:40px 20px;color:var(--mu);font-size:13px;}
+.fab{position:fixed;bottom:75px;right:20px;width:52px;height:52px;border-radius:16px;background:var(--bl);color:#fff;font-size:24px;border:none;box-shadow:0 4px 20px rgba(79,156,249,.4);z-index:90;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.nav{position:fixed;bottom:0;left:0;right:0;background:rgba(10,10,15,.96);backdrop-filter:blur(20px);border-top:1px solid var(--bd);display:flex;padding:8px 0 18px;z-index:100;max-width:480px;margin:0 auto;}
+.nb{flex:1;background:none;border:none;color:var(--mu);font-size:9px;font-family:'DM Sans',sans-serif;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;transition:color .15s;}
+.nb.active{color:var(--bl);}
+.nb svg{width:20px;height:20px;}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .25s;}
+.overlay.open{opacity:1;pointer-events:all;}
+.modal{background:var(--sf);border-radius:22px 22px 0 0;padding:22px 20px 38px;width:100%;max-height:90dvh;overflow-y:auto;transform:translateY(100%);transition:transform .3s ease;}
+.overlay.open .modal{transform:translateY(0);}
+.mh{font-family:'Space Mono',monospace;font-size:14px;font-weight:700;margin-bottom:18px;}
+.frow{margin-bottom:12px;}
+label{display:block;font-size:10px;color:var(--mu);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;font-weight:600;}
+input,select{width:100%;background:var(--bg);border:1px solid var(--bd);color:var(--tx);padding:10px 12px;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:14px;outline:none;}
+input:focus,select:focus{border-color:var(--bl);}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.btn-row{display:flex;gap:8px;margin-top:16px;}
+.btn{flex:1;padding:12px;border-radius:10px;border:none;font-family:'DM Sans',sans-serif;font-weight:600;font-size:14px;cursor:pointer;}
+.btn.p{background:var(--bl);color:#fff;}
+.btn.s{background:var(--bd);color:var(--tx);}
+.toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:var(--cy);color:#000;padding:8px 18px;border-radius:20px;font-size:13px;font-weight:600;z-index:300;opacity:0;transition:opacity .3s;pointer-events:none;}
+.toast.show{opacity:1;}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-top">
+    <h1>Tank<span style="color:var(--bl)">buch</span></h1>
+    <button class="yr-badge" id="yrBtn" onclick="toggleYear()">2026</button>
+  </div>
+  <div class="hdr-sub" id="hdrSub">alle einträge</div>
+</div>
+
+<div class="filter-bar" id="filterBar"></div>
+
+<div class="cards" id="cards"></div>
+
+<div class="sec"><span>Einträge</span><span id="countLbl"></span></div>
+<div class="list" id="list"></div>
+
+<button class="fab" onclick="openModal()">＋</button>
+
+<nav class="nav">
+  <button class="nb active" id="nb-list" onclick="setPage('list')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+    Liste
+  </button>
+  <button class="nb" id="nb-stats" onclick="setPage('stats')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+    Statistik
+  </button>
+</nav>
+
+<div class="overlay" id="overlay" onclick="e=>{if(e.target===this)closeModal()}">
+  <div class="modal">
+    <div class="mh" id="modalTitle">Tankfüllung</div>
+    <div class="frow">
+      <label>Datum</label>
+      <input type="date" id="fDate">
+    </div>
+    <div class="fgrid">
+      <div class="frow">
+        <label>Liter</label>
+        <input type="number" id="fLiter" placeholder="45.00" step="0.01">
+      </div>
+      <div class="frow">
+        <label>Preis/Liter (€)</label>
+        <input type="number" id="fPreis" placeholder="1.759" step="0.001">
+      </div>
+    </div>
+    <div class="fgrid">
+      <div class="frow">
+        <label>Gesamt (€)</label>
+        <input type="number" id="fGesamt" placeholder="79.16" step="0.01">
+      </div>
+      <div class="frow">
+        <label>KM-Stand</label>
+        <input type="number" id="fKm" placeholder="123456">
+      </div>
+    </div>
+    <div class="frow">
+      <label>Kraftstoff</label>
+      <select id="fKraft">
+        <option value="Super E5">Super E5</option>
+        <option value="Super E10">Super E10</option>
+        <option value="Super Plus">Super Plus</option>
+        <option value="Diesel">Diesel</option>
+        <option value="AdBlue">AdBlue</option>
+      </select>
+    </div>
+    <div class="frow">
+      <label>Tankstelle / Notiz</label>
+      <input type="text" id="fNote" placeholder="z.B. Aral A3" maxlength="50">
+    </div>
+    <div class="btn-row">
+      <button class="btn s" onclick="closeModal()">Abbrechen</button>
+      <button class="btn p" onclick="saveEntry()">Speichern</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const KEY='tankbuch_v2';
+let data=JSON.parse(localStorage.getItem(KEY)||'{"entries":[]}');
+let selYear=new Date().getFullYear();
+let selMon=null; // null=alle
+let page='list';
+let editId=null;
+
+function save(){localStorage.setItem(KEY,JSON.stringify(data));}
+
+// Auto-calc Gesamt
+document.getElementById('fLiter').oninput=calcGesamt;
+document.getElementById('fPreis').oninput=calcGesamt;
+function calcGesamt(){
+  const l=parseFloat(document.getElementById('fLiter').value);
+  const p=parseFloat(document.getElementById('fPreis').value);
+  if(l&&p) document.getElementById('fGesamt').value=(l*p).toFixed(2);
+}
+
+function getEntries(){
+  return data.entries.filter(e=>{
+    const d=new Date(e.date);
+    if(d.getFullYear()!==selYear) return false;
+    if(selMon!==null && d.getMonth()!==selMon) return false;
+    return true;
+  }).sort((a,b)=>b.date.localeCompare(a.date));
+}
+
+function toggleYear(){
+  selYear = selYear===new Date().getFullYear() ? new Date().getFullYear()-1 : new Date().getFullYear();
+  document.getElementById('yrBtn').textContent=selYear;
+  render();
+}
+
+function renderFilters(){
+  const MONTHS=['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
+  let html=`<div class="chip${selMon===null?' active':''}" onclick="setMon(null)">Alle</div>`;
+  MONTHS.forEach((m,i)=>{
+    html+=`<div class="chip${selMon===i?' active':''}" onclick="setMon(${i})">${m}</div>`;
+  });
+  document.getElementById('filterBar').innerHTML=html;
+}
+
+function setMon(m){selMon=m;render();}
+
+function renderCards(entries){
+  const total=entries.reduce((s,e)=>s+(e.gesamt||0),0);
+  const liter=entries.reduce((s,e)=>s+(e.liter||0),0);
+  const avgPreis=liter>0?total/liter:0;
+  // Verbrauch
+  const sorted=[...entries].sort((a,b)=>a.date.localeCompare(b.date));
+  let avgVerb=0;
+  if(sorted.length>=2){
+    const kmDiff=sorted[sorted.length-1].km - sorted[0].km;
+    const litExFirst=sorted.slice(1).reduce((s,e)=>s+(e.liter||0),0);
+    if(kmDiff>0) avgVerb=(litExFirst/kmDiff)*100;
+  }
+  document.getElementById('cards').innerHTML=`
+    <div class="card bl"><div class="cl">Gesamt €</div><div class="cv">${total.toFixed(2)}</div></div>
+    <div class="card cy"><div class="cl">Liter</div><div class="cv">${liter.toFixed(1)}</div></div>
+    <div class="card or"><div class="cl">Ø €/L</div><div class="cv">${avgPreis.toFixed(3)}</div></div>
+    <div class="card pu"><div class="cl">Ø L/100km</div><div class="cv">${avgVerb>0?avgVerb.toFixed(1):'–'}</div></div>
+  `;
+}
+
+function renderList(entries){
+  document.getElementById('countLbl').textContent=entries.length+' Einträge';
+  if(!entries.length){
+    document.getElementById('list').innerHTML='<div class="empty">Noch keine Einträge.<br>Tippe auf ＋ um loszulegen.</div>';
+    return;
+  }
+  document.getElementById('list').innerHTML=entries.map(e=>`
+    <div class="item">
+      <div class="item-top">
+        <div>
+          <div class="item-date">${fmtDate(e.date)} · ${e.kraft||'Super'}</div>
+          ${e.note?`<div class="item-note">📍 ${e.note}</div>`:''}
+        </div>
+        <div class="item-price">${(e.gesamt||0).toFixed(2)} €</div>
+      </div>
+      <div class="item-grid">
+        <div><div class="ig-val" style="color:var(--cy)">${(e.liter||0).toFixed(2)} L</div><div class="ig-lbl">Menge</div></div>
+        <div><div class="ig-val" style="color:var(--or)">${(e.preis||0).toFixed(3)} €</div><div class="ig-lbl">pro Liter</div></div>
+        <div><div class="ig-val" style="color:var(--pu)">${e.km?e.km.toLocaleString('de-DE')+' km':'–'}</div><div class="ig-lbl">KM-Stand</div></div>
+      </div>
+      <div class="item-actions">
+        <button class="del-btn" onclick="deleteEntry('${e.id}')">🗑 Löschen</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderStats(entries){
+  const byMon={};
+  entries.forEach(e=>{
+    const k=e.date.slice(0,7);
+    if(!byMon[k]) byMon[k]={total:0,liter:0,count:0};
+    byMon[k].total+=e.gesamt||0;
+    byMon[k].liter+=e.liter||0;
+    byMon[k].count++;
+  });
+  const keys=Object.keys(byMon).sort().reverse();
+  if(!keys.length){document.getElementById('list').innerHTML='<div class="empty">Keine Daten.</div>';return;}
+  document.getElementById('list').innerHTML=keys.map(k=>{
+    const m=byMon[k];
+    const [y,mo]=k.split('-');
+    const MONTHS=['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
+    return `<div class="item">
+      <div class="item-top">
+        <div class="item-date" style="font-size:13px;color:var(--tx)">${MONTHS[parseInt(mo)-1]} ${y}</div>
+        <div class="item-price">${m.total.toFixed(2)} €</div>
+      </div>
+      <div class="item-grid">
+        <div><div class="ig-val" style="color:var(--cy)">${m.liter.toFixed(1)} L</div><div class="ig-lbl">Liter</div></div>
+        <div><div class="ig-val" style="color:var(--or)">${(m.total/m.liter).toFixed(3)} €</div><div class="ig-lbl">Ø/L</div></div>
+        <div><div class="ig-val" style="color:var(--pu)">${m.count}x</div><div class="ig-lbl">Tankungen</div></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function render(){
+  renderFilters();
+  const entries=getEntries();
+  renderCards(entries);
+  if(page==='list') renderList(entries);
+  else renderStats(entries);
+  const MONTHS=['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+  document.getElementById('hdrSub').textContent = selMon!==null ? MONTHS[selMon]+' '+selYear : 'Alle · '+selYear;
+}
+
+function setPage(p){
+  page=p;
+  ['list','stats'].forEach(x=>document.getElementById('nb-'+x).classList.toggle('active',x===p));
+  render();
+}
+
+function openModal(id=null){
+  editId=id;
+  const e=id?data.entries.find(x=>x.id===id):null;
+  document.getElementById('fDate').value=e?.date||new Date().toISOString().slice(0,10);
+  document.getElementById('fLiter').value=e?.liter||'';
+  document.getElementById('fPreis').value=e?.preis||'';
+  document.getElementById('fGesamt').value=e?.gesamt||'';
+  document.getElementById('fKm').value=e?.km||'';
+  document.getElementById('fKraft').value=e?.kraft||'Super E5';
+  document.getElementById('fNote').value=e?.note||'';
+  document.getElementById('overlay').classList.add('open');
+}
+
+function closeModal(){document.getElementById('overlay').classList.remove('open');}
+
+document.getElementById('overlay').onclick=function(e){if(e.target===this)closeModal();};
+
+function saveEntry(){
+  const liter=parseFloat(document.getElementById('fLiter').value);
+  const gesamt=parseFloat(document.getElementById('fGesamt').value);
+  if(!liter||!gesamt){showToast('Liter und Betrag erforderlich!','err');return;}
+  const entry={
+    id:editId||Date.now().toString(),
+    date:document.getElementById('fDate').value,
+    liter,
+    preis:parseFloat(document.getElementById('fPreis').value)||gesamt/liter,
+    gesamt,
+    km:parseInt(document.getElementById('fKm').value)||null,
+    kraft:document.getElementById('fKraft').value,
+    note:document.getElementById('fNote').value.trim()
+  };
+  if(editId){const i=data.entries.findIndex(x=>x.id===editId);data.entries[i]=entry;}
+  else data.entries.push(entry);
+  save();closeModal();render();showToast('Gespeichert ✓');
+}
+
+function deleteEntry(id){
+  if(!confirm('Eintrag löschen?'))return;
+  data.entries=data.entries.filter(e=>e.id!==id);
+  save();render();
+}
+
+function showToast(msg,type){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.style.background=type==='err'?'var(--rd)':'var(--cy)';
+  t.style.color=type==='err'?'#fff':'#000';
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2200);
+}
+
+function fmtDate(d){
+  if(!d)return'';
+  const[y,m,day]=d.split('-');
+  return`${day}.${m}.${y}`;
+}
+
+// Service Worker
+if('serviceWorker' in navigator){
+  const sw=`const C='tankbuch-v1';self.addEventListener('install',e=>e.waitUntil(caches.open(C).then(c=>c.addAll([self.location.pathname]))));self.addEventListener('fetch',e=>e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request))));`;
+  const b=new Blob([sw],{type:'text/javascript'});
+  navigator.serviceWorker.register(URL.createObjectURL(b));
+}
+
+render();
+</script>
+</body>
+</html>
