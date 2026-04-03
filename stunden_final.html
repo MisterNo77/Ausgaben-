@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0e1117">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Stunden">
+<script>(function(){const m={name:"Stunden ZV31-2",short_name:"Stunden",start_url:location.pathname,display:"standalone",background_color:"#0e1117",theme_color:"#3b82f6",icons:[{src:"data:image/svg+xml,"+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="%230e1117"/><text y="68" x="50" text-anchor="middle" font-size="55">⏱</text></svg>'),sizes:"192x192",type:"image/svg+xml"}]};const b=new Blob([JSON.stringify(m)],{type:"application/json"});document.write('<link rel="manifest" href="'+URL.createObjectURL(b)+'">');})();</script>
+<title>Stunden · ZV31-2</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0e1117;--sf:#161b27;--sf2:#1e2535;--bd:#2a3347;
+  --tx:#e2e8f0;--mu:#64748b;
+  --mo:'IBM Plex Mono',monospace;--sa:'IBM Plex Sans',sans-serif;
+  --ac:#3b82f6;--ac2:#22d3ee;--gn:#10b981;--or:#f59e0b;--rd:#ef4444;--pu:#a855f7;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{background:var(--bg);color:var(--tx);font-family:var(--sa);max-width:430px;margin:0 auto;min-height:100vh;padding-bottom:80px;}
+
+/* HEADER */
+.hdr{background:var(--sf);border-bottom:1px solid var(--bd);padding:13px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.badge{background:var(--ac);color:#fff;font-family:var(--mo);font-size:11px;font-weight:600;padding:4px 8px;border-radius:4px;letter-spacing:1px;}
+.hdr h1{font-family:var(--mo);font-size:13px;margin-left:10px;}
+.hdr-date{font-family:var(--mo);font-size:11px;color:var(--mu);}
+
+/* KONTEN */
+.konten{padding:14px 14px 0;}
+.konto-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.kk{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:14px;position:relative;overflow:hidden;}
+.kk::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.kk.da1::before{background:var(--ac);}
+.kk.da2::before{background:var(--ac2);}
+.kk.url::before{background:var(--gn);}
+.kk.meh::before{background:var(--or);}
+.kk.ft::before{background:var(--pu);}
+.kk-wide{grid-column:1/-1;}
+.kl{font-family:var(--mo);font-size:9px;letter-spacing:1.5px;color:var(--mu);text-transform:uppercase;margin-bottom:6px;}
+.kv{font-family:var(--mo);font-size:26px;font-weight:600;line-height:1;}
+.kk.da1 .kv{color:var(--ac);}
+.kk.da2 .kv{color:var(--ac2);}
+.kk.url .kv{color:var(--gn);}
+.kk.meh .kv{color:var(--or);}
+.kk.ft .kv{color:var(--pu);}
+.ku{font-family:var(--mo);font-size:11px;color:var(--mu);margin-top:3px;}
+.url-bar{height:6px;background:var(--bg);border-radius:3px;overflow:hidden;margin-top:7px;}
+.url-fill{height:100%;border-radius:3px;background:var(--gn);transition:width .4s;}
+
+/* WARNUNG */
+.warn{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.35);border-radius:10px;margin:12px 14px 0;padding:12px 14px;font-family:var(--mo);font-size:12px;color:#fca5a5;display:none;}
+.warn.show{display:block;}
+
+/* BUCHEN BEREICH */
+.buchen{padding:14px;}
+
+.card{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:12px;}
+.ct{font-family:var(--mo);font-size:10px;font-weight:600;letter-spacing:1.5px;color:var(--mu);text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.ct::after{content:'';flex:1;height:1px;background:var(--bd);}
+
+/* SCHNELL-BUTTONS */
+.schnell-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;}
+.sb{border-radius:10px;padding:12px 8px;cursor:pointer;font-family:var(--mo);font-size:11px;font-weight:600;text-align:center;border:2px solid transparent;transition:all .15s;user-select:none;line-height:1.4;}
+.sb:active{transform:scale(.95);}
+.sb.sp{background:rgba(30,64,175,.3);color:#93c5fd;border-color:rgba(59,130,246,.5);}
+.sb.fn{background:rgba(29,78,216,.3);color:#bfdbfe;border-color:rgba(59,130,246,.5);}
+.sb.ur{background:rgba(194,65,12,.25);color:#fdba74;border-color:rgba(234,88,12,.4);}
+.sb.kr{background:rgba(22,101,52,.25);color:#86efac;border-color:rgba(34,197,94,.35);}
+.sb.bt{background:rgba(146,64,14,.3);color:#fcd34d;border-color:rgba(217,119,6,.5);}
+.sb.lh{background:rgba(14,116,144,.25);color:#67e8f9;border-color:rgba(6,182,212,.35);}
+.sb.ft{background:rgba(109,40,217,.25);color:#c4b5fd;border-color:rgba(139,92,246,.4);}
+.sb.mh{background:rgba(245,158,11,.15);color:var(--or);border-color:rgba(245,158,11,.4);}
+
+/* MANUELL EINGABE */
+.manuell-bereich{background:var(--sf2);border:1px solid var(--bd);border-radius:10px;padding:14px;margin-bottom:12px;}
+.mb-title{font-family:var(--mo);font-size:10px;color:var(--mu);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;}
+.konto-wahl{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:12px;}
+.kw{background:var(--sf);border:1px solid var(--bd);border-radius:7px;padding:8px 4px;cursor:pointer;font-family:var(--mo);font-size:10px;font-weight:600;color:var(--mu);text-align:center;transition:all .15s;}
+.kw.sel.da1{border-color:var(--ac);color:var(--ac);background:rgba(59,130,246,.1);}
+.kw.sel.da2{border-color:var(--ac2);color:var(--ac2);background:rgba(34,211,238,.1);}
+.kw.sel.ft{border-color:var(--pu);color:var(--pu);background:rgba(168,85,247,.1);}
+.kw.sel.meh{border-color:var(--or);color:var(--or);background:rgba(245,158,11,.1);}
+.kw.sel.url{border-color:var(--gn);color:var(--gn);background:rgba(16,185,129,.1);}
+
+.plus-minus{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;}
+.pm-btn{background:var(--sf);border:1px solid var(--bd);border-radius:8px;padding:10px;cursor:pointer;font-family:var(--mo);font-size:12px;font-weight:600;color:var(--tx);text-align:center;transition:all .15s;}
+.pm-btn:active{transform:scale(.95);}
+.pm-btn.plus{border-color:var(--gn);color:var(--gn);}
+.pm-btn.minus{border-color:var(--rd);color:var(--rd);}
+
+.std-input-row{display:grid;grid-template-columns:1fr auto;gap:8px;margin-bottom:10px;align-items:center;}
+.std-input{background:var(--sf);border:1px solid var(--bd);border-radius:8px;padding:12px;color:var(--tx);font-family:var(--mo);font-size:18px;font-weight:600;text-align:center;width:100%;}
+.std-input:focus{outline:none;border-color:var(--ac);}
+.std-label{font-family:var(--mo);font-size:12px;color:var(--mu);}
+
+.btn-buchen{width:100%;background:var(--ac);color:#fff;border:none;border-radius:8px;padding:13px;font-family:var(--mo);font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;}
+.btn-buchen:active{transform:scale(.98);}
+.btn-buchen:disabled{background:var(--sf2);color:var(--mu);}
+
+/* VERLAUF */
+.verlauf-liste{display:flex;flex-direction:column;gap:7px;}
+.vi{background:var(--sf);border:1px solid var(--bd);border-radius:9px;padding:11px 13px;display:flex;align-items:center;gap:10px;}
+.vi-icon{font-size:20px;width:28px;text-align:center;flex-shrink:0;}
+.vi-info{flex:1;}
+.vi-titel{font-family:var(--mo);font-size:12px;font-weight:600;}
+.vi-datum{font-family:var(--mo);font-size:10px;color:var(--mu);margin-top:2px;}
+.vi-wert{font-family:var(--mo);font-size:14px;font-weight:600;}
+.vi-wert.pos{color:var(--gn);}
+.vi-wert.neg{color:var(--rd);}
+.vi-del{background:none;border:none;color:var(--mu);cursor:pointer;font-size:18px;padding:4px;}
+
+/* KALENDER */
+.kal-section{padding:14px;}
+.kal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.kal-nav h2{font-family:var(--mo);font-size:16px;font-weight:600;}
+.nvb{background:var(--sf);border:1px solid var(--bd);color:var(--tx);border-radius:6px;width:32px;height:32px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;}
+.bsm{background:transparent;border:1px solid var(--bd);color:var(--mu);font-family:var(--mo);font-size:10px;font-weight:600;padding:6px 10px;border-radius:6px;cursor:pointer;}
+
+.cal-hdr{display:grid;grid-template-columns:repeat(7,1fr);margin-bottom:3px;}
+.chd{font-family:var(--mo);font-size:9px;font-weight:600;color:var(--mu);text-align:center;padding:5px 2px;text-transform:uppercase;}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;}
+.cd{min-height:50px;border-radius:6px;padding:4px 2px;cursor:pointer;transition:all .15s;display:flex;flex-direction:column;align-items:center;}
+.cd:active{transform:scale(.93);}
+.cd.oth{opacity:.2;}
+.cd.tod{outline:2px solid var(--ac);}
+.dn{font-family:var(--mo);font-size:11px;font-weight:600;text-align:center;margin-bottom:2px;}
+.cd.tod .dn{color:var(--ac);}
+.tag-typ{font-family:var(--mo);font-size:8px;font-weight:600;text-align:center;line-height:1.3;padding:1px 2px;border-radius:2px;width:100%;}
+
+.cd.t-spaet{background:rgba(30,64,175,.35);border:1px solid rgba(59,130,246,.4);}
+.cd.t-fn{background:rgba(29,78,216,.45);border:1px solid rgba(59,130,246,.5);}
+.cd.t-frei{background:var(--sf2);border:1px solid var(--bd);}
+.cd.t-urlaub{background:rgba(194,65,12,.3);border:1px solid rgba(234,88,12,.5);}
+.cd.t-beton{background:rgba(146,64,14,.4);border:1px solid rgba(217,119,6,.5);}
+.cd.t-krank{background:rgba(22,101,52,.35);border:1px solid rgba(34,197,94,.4);}
+.cd.t-lehrgang{background:rgba(14,116,144,.3);border:1px solid rgba(6,182,212,.4);}
+.cd.t-feiertag{background:rgba(109,40,217,.3);border:1px solid rgba(139,92,246,.5);}
+.cd.t-wunsch{background:rgba(120,53,15,.35);border:1px dashed rgba(217,119,6,.6);}
+
+.t-spaet .tag-typ{color:#93c5fd;}
+.t-fn .tag-typ{color:#bfdbfe;}
+.t-frei .tag-typ{color:var(--mu);}
+.t-urlaub .tag-typ{color:#fdba74;}
+.t-beton .tag-typ{color:#fcd34d;}
+.t-krank .tag-typ{color:#86efac;}
+.t-lehrgang .tag-typ{color:#67e8f9;}
+.t-feiertag .tag-typ{color:#c4b5fd;}
+.t-wunsch .tag-typ{color:#fbbf24;}
+
+/* TAG MODAL */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:300;display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .2s;}
+.modal-bg.open{opacity:1;pointer-events:all;}
+.modal{background:var(--sf);border-radius:20px 20px 0 0;padding:18px;width:100%;max-height:80vh;overflow-y:auto;transform:translateY(100%);transition:transform .28s cubic-bezier(.32,0,.67,0);}
+.modal-bg.open .modal{transform:translateY(0);}
+.mh{width:40px;height:4px;background:var(--bd);border-radius:2px;margin:0 auto 14px;}
+.md{font-family:var(--mo);font-size:13px;font-weight:600;margin-bottom:14px;}
+.typ-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:14px;}
+.tb{border-radius:8px;padding:10px 4px;cursor:pointer;font-family:var(--mo);font-size:10px;font-weight:600;text-align:center;border:2px solid transparent;transition:all .15s;line-height:1.4;}
+.tb:active{transform:scale(.95);}
+.tb.t-spaet{background:rgba(30,64,175,.3);color:#93c5fd;border-color:rgba(59,130,246,.4);}
+.tb.t-fn{background:rgba(29,78,216,.3);color:#bfdbfe;border-color:rgba(59,130,246,.5);}
+.tb.t-frei{background:var(--sf2);color:var(--mu);border-color:var(--bd);}
+.tb.t-urlaub{background:rgba(194,65,12,.2);color:#fdba74;border-color:rgba(234,88,12,.4);}
+.tb.t-krank{background:rgba(22,101,52,.3);color:#86efac;border-color:rgba(34,197,94,.3);}
+.tb.t-lehrgang{background:rgba(14,116,144,.2);color:#67e8f9;border-color:rgba(6,182,212,.3);}
+.tb.t-beton{background:rgba(146,64,14,.3);color:#fcd34d;border-color:rgba(217,119,6,.4);}
+.tb.t-wunsch{background:rgba(120,53,15,.3);color:#fbbf24;border-color:rgba(217,119,6,.4);}
+.tb.t-feiertag{background:rgba(109,40,217,.2);color:#c4b5fd;border-color:rgba(139,92,246,.3);}
+.tb.sel{border-color:#fff!important;}
+.notiz-inp{width:100%;background:var(--sf2);border:1px solid var(--bd);border-radius:7px;padding:9px 11px;color:var(--tx);font-family:var(--sa);font-size:13px;margin-bottom:12px;}
+.notiz-inp:focus{outline:none;border-color:var(--ac);}
+.btn-sp{width:100%;background:var(--ac);color:#fff;border:none;border-radius:8px;padding:12px;font-family:var(--mo);font-size:13px;font-weight:600;cursor:pointer;margin-bottom:8px;}
+.btn-rs{width:100%;background:transparent;border:1px solid var(--rd);color:var(--rd);border-radius:8px;padding:10px;font-family:var(--mo);font-size:12px;font-weight:600;cursor:pointer;}
+
+/* NAV */
+.bnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:var(--sf);border-top:1px solid var(--bd);display:flex;padding:8px 0 env(safe-area-inset-bottom,8px);}
+.bn{flex:1;background:none;border:none;color:var(--mu);font-family:var(--mo);font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;padding:8px 4px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;}
+.bn.active{color:var(--tx);}
+.bn-i{font-size:20px;}
+.page{display:none;}
+.page.active{display:block;}
+
+.empty{text-align:center;padding:30px;color:var(--mu);font-family:var(--mo);font-size:12px;border:1px dashed var(--bd);border-radius:10px;}
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--gn);color:#fff;font-family:var(--mo);font-size:12px;font-weight:600;padding:10px 18px;border-radius:8px;opacity:0;transition:all .3s;z-index:500;white-space:nowrap;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+label{font-family:var(--mo);font-size:10px;font-weight:600;letter-spacing:1px;color:var(--mu);text-transform:uppercase;display:block;margin-bottom:5px;}
+input[type=number]{width:100%;background:var(--sf2);border:1px solid var(--bd);border-radius:6px;padding:10px 12px;color:var(--tx);font-family:var(--mo);font-size:15px;margin-bottom:10px;}
+input:focus{outline:none;border-color:var(--ac);}
+.fr2{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+.ib{background:rgba(59,130,246,.07);border:1px solid rgba(59,130,246,.2);border-radius:8px;padding:9px 12px;font-size:11px;color:#93c5fd;font-family:var(--mo);line-height:1.6;margin-bottom:11px;}
+.sdv{font-family:var(--mo);font-size:10px;letter-spacing:1.5px;color:var(--mu);text-transform:uppercase;display:flex;align-items:center;gap:9px;margin-bottom:10px;}
+.sdv::after{content:'';flex:1;height:1px;background:var(--bd);}
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <div style="display:flex;align-items:center;">
+    <span class="badge">BKA</span>
+    <h1>ZV31-2 · 2026</h1>
+  </div>
+  <span class="hdr-date" id="hdrDate"></span>
+</header>
+
+<!-- WARNUNG -->
+<div class="warn" id="warnEl">
+  ⚠️ <strong>Achtung!</strong> Dein DA1-Konto ist über 40h — Stunden könnten am 31. März verfallen! Bitte Beton-Abbau planen.
+</div>
+
+<!-- ══════════ SEITE 1: KONTOSTAND + BUCHEN ══════════ -->
+<div class="page active" id="pg-home">
+
+  <!-- KONTEN -->
+  <div class="konten">
+    <div class="konto-grid">
+      <div class="kk da1">
+        <div class="kl">DA1 / Beton</div>
+        <div class="kv" id="vDA1">10,25</div>
+        <div class="ku">Stunden</div>
+      </div>
+      <div class="kk da2">
+        <div class="kl">DA2 / Rüstzeit</div>
+        <div class="kv" id="vDA2">2,65</div>
+        <div class="ku">Stunden</div>
+      </div>
+      <div class="kk url">
+        <div class="kl">Resturlaub</div>
+        <div class="kv" id="vUrl">13</div>
+        <div class="ku">Tage</div>
+        <div class="url-bar"><div class="url-fill" id="urlFill" style="width:48%"></div></div>
+      </div>
+      <div class="kk meh">
+        <div class="kl">Mehrarbeit</div>
+        <div class="kv" id="vMeh">10,00</div>
+        <div class="ku">Stunden</div>
+      </div>
+      <div class="kk ft kk-wide" style="display:flex;align-items:center;justify-content:space-between;">
+        <div>
+          <div class="kl">Feiertagsstunden</div>
+          <div class="kv" id="vFt">38,00</div>
+          <div class="ku">Stunden</div>
+        </div>
+        <div style="font-family:var(--mo);font-size:10px;color:var(--mu);text-align:right;">Nächster Feiertag:<br><span id="naechFt" style="color:#c4b5fd;font-size:11px;"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BUCHEN -->
+  <div class="buchen">
+    <div class="card">
+      <div class="ct">Schnell buchen</div>
+
+      <!-- Schichten -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+        <div class="sb fn" style="background:rgba(99,102,241,.3);border-color:rgba(129,140,248,.5);color:#a5b4fc;grid-column:1/-1;" onclick="schnell('turn')">🔄 GANZER TURN · +0,50h DA2</div>
+        <div class="sb sp" onclick="schnell('spaet')">🌆 SPÄT<br><span style="font-size:9px;opacity:.7;">+0,17h DA2</span></div>
+        <div class="sb fn" onclick="schnell('fn')">🌅🌙 FRÜH+NACHT<br><span style="font-size:9px;opacity:.7;">+0,33h DA2</span></div>
+        <div class="sb lh" onclick="schnell('lehrgang')">📚 LEHRGANG<br><span style="font-size:9px;opacity:.7;">+DA2 Std eingeben</span></div>
+      </div>
+
+      <!-- FEIERTAG VARIANTEN -->
+      <div style="font-family:var(--mo);font-size:10px;color:var(--mu);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;margin-top:4px;">🎉 Feiertag buchen — Typ wählen:</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;">
+        <div class="sb ft" style="font-size:10px;" onclick="schnell('ft_spaet')">🌆 Spät<br><span style="font-size:9px;opacity:.7;">+8h FT</span></div>
+        <div class="sb ft" style="font-size:10px;" onclick="schnell('ft_fn')">🌅🌙 Früh+Nacht<br><span style="font-size:9px;opacity:.7;">+10h FT</span></div>
+        <div class="sb ft" style="font-size:10px;" onclick="schnell('ft_nacht')">🌙 Nacht ab 0h<br><span style="font-size:9px;opacity:.7;">+6h FT</span></div>
+      </div>
+    </div>
+
+    <!-- MANUELL -->
+    <div class="card">
+      <div class="ct">Manuell buchen</div>
+      <div class="manuell-bereich">
+        <div class="mb-title">Konto wählen:</div>
+        <div class="konto-wahl">
+          <div class="kw da1" id="kw-da1" onclick="selKonto('da1')">DA1</div>
+          <div class="kw da2" id="kw-da2" onclick="selKonto('da2')">DA2</div>
+          <div class="kw ft"  id="kw-ft"  onclick="selKonto('ft')">FT-Std</div>
+          <div class="kw meh" id="kw-meh" onclick="selKonto('meh')">Mehr</div>
+          <div class="kw url" id="kw-url" onclick="selKonto('url')">Urlaub</div>
+        </div>
+        <div class="plus-minus">
+          <div class="pm-btn plus" onclick="setPM('+')">＋ Gutschrift</div>
+          <div class="pm-btn minus" onclick="setPM('-')">－ Abbau</div>
+        </div>
+        <div class="std-input-row">
+          <input class="std-input" type="number" id="manStd" step="0.1" placeholder="0,00" min="0">
+          <span class="std-label" id="manUnit">h</span>
+        </div>
+        <input class="notiz-inp" type="text" id="manNotiz" placeholder="Notiz (optional)..." style="margin-bottom:10px;">
+        <button class="btn-buchen" id="btnMan" onclick="manuellBuchen()" disabled>Buchen</button>
+      </div>
+    </div>
+
+    <!-- VERLAUF -->
+    <div class="card">
+      <div class="ct">Letzte Buchungen</div>
+      <div id="verlauf"><div class="empty">Noch keine Buchungen</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ SEITE 2: KALENDER ══════════ -->
+<div class="page" id="pg-kal">
+  <div class="kal-section">
+    <div class="kal-nav">
+      <div style="display:flex;gap:6px;">
+        <button class="nvb" onclick="chM(-1)">‹</button>
+        <button class="nvb" onclick="chM(1)">›</button>
+      </div>
+      <h2 id="mTit"></h2>
+      <button class="bsm" onclick="goNow()">Heute</button>
+    </div>
+
+    <!-- Monatsstats -->
+    <div style="background:var(--sf);border:1px solid var(--bd);border-radius:10px;padding:10px 14px;margin-bottom:10px;display:flex;gap:14px;flex-wrap:wrap;" id="mStat"></div>
+
+    <div class="cal-hdr">
+      <div class="chd">Mo</div><div class="chd">Di</div><div class="chd">Mi</div>
+      <div class="chd">Do</div><div class="chd">Fr</div>
+      <div class="chd" style="color:#f87171">Sa</div>
+      <div class="chd" style="color:#f87171">So</div>
+    </div>
+    <div class="cal-grid" id="calGrid"></div>
+
+    <!-- Legende -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:12px;">
+      <div style="display:flex;align-items:center;gap:5px;font-family:var(--mo);font-size:10px;color:var(--mu);"><div style="width:11px;height:11px;border-radius:3px;background:#1e40af;"></div>Spät</div>
+      <div style="display:flex;align-items:center;gap:5px;font-family:var(--mo);font-size:10px;color:var(--mu);"><div style="width:11px;height:11px;border-radius:3px;background:#1d4ed8;"></div>Früh+Nacht</div>
+      <div style="display:flex;align-items:center;gap:5px;font-family:var(--mo);font-size:10px;color:var(--mu);"><div style="width:11px;height:11px;border-radius:3px;background:#166534;"></div>Krank</div>
+      <div style="display:flex;align-items:center;gap:5px;font-family:var(--mo);font-size:10px;color:var(--mu);"><div style="width:11px;height:11px;border-radius:3px;background:#c2410c;"></div>Urlaub</div>
+      <div style="display:flex;align-items:center;gap:5px;font-family:var(--mo);font-size:10px;color:var(--mu);"><div style="width:11px;height:11px;border-radius:3px;background:#92400e;"></div>Beton Abbau</div>
+      <div style="display:flex;align-items:center;gap:5px;font-family:var(--mo);font-size:10px;color:var(--mu);"><div style="width:11px;height:11px;border-radius:3px;background:#6d28d9;"></div>Feiertag</div>
+      <div style="display:flex;align-items:center;gap:5px;font-family:var(--mo);font-size:10px;color:var(--mu);"><div style="width:11px;height:11px;border-radius:3px;background:#78350f;border:1px dashed #fbbf24;"></div>Beton Wunsch</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ SEITE 3: EINSTELLUNGEN ══════════ -->
+<div class="page" id="pg-set">
+  <div style="padding:14px;">
+    <div class="card">
+      <div class="ct">Kontostand anpassen</div>
+      <div class="ib">Hier kannst du die aktuellen Stunden direkt korrigieren. Nur benutzen wenn etwas falsch ist!</div>
+      <div class="fr2">
+        <div><label>DA1 / Beton (h)</label><input type="number" id="setDA1" step="0.25" onchange="setKonto()"></div>
+        <div><label>DA2 / Rüst (h)</label><input type="number" id="setDA2" step="0.25" onchange="setKonto()"></div>
+        <div><label>Resturlaub (Tage)</label><input type="number" id="setUrl" step="1" onchange="setKonto()"></div>
+        <div><label>Mehrarbeit (h)</label><input type="number" id="setMeh" step="0.5" onchange="setKonto()"></div>
+        <div><label>Feiertag (h)</label><input type="number" id="setFt" step="1" onchange="setKonto()"></div>
+        <div><label>Urlaub/Jahr</label><input type="number" id="setUJ" step="1" value="27" onchange="setKonto()"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="ct">DA1 Monate vom Chef</div>
+      <div class="ib">Diese Werte kommen automatisch dazu wenn der Monat beginnt.</div>
+      <div class="fr2" style="margin-bottom:10px;">
+        <div><label>Monat</label>
+          <select id="da1Sel" style="width:100%;background:var(--sf2);border:1px solid var(--bd);border-radius:6px;padding:10px 12px;color:var(--tx);font-family:var(--mo);font-size:13px;">
+            <option value="2026-05">Mai 2026</option>
+            <option value="2026-06">Juni 2026</option>
+            <option value="2026-07">Juli 2026</option>
+            <option value="2026-08">August 2026</option>
+            <option value="2026-09">September 2026</option>
+            <option value="2026-10">Oktober 2026</option>
+            <option value="2026-11">November 2026</option>
+            <option value="2026-12">Dezember 2026</option>
+          </select>
+        </div>
+        <div><label>DA1 Stunden</label><input type="number" id="da1Val" step="0.1" placeholder="z.B. 45.6" style="font-size:16px;"></div>
+      </div>
+      <button class="btn-buchen" onclick="saveDA1M()">＋ Speichern</button>
+      <div id="da1List" style="margin-top:12px;display:flex;flex-direction:column;gap:6px;"></div>
+    </div>
+
+    <div class="card">
+      <div class="ct">Verlauf löschen</div>
+      <button onclick="if(confirm('Alle Buchungen löschen?')){S.buchungen=[];save();renAll();toast('Verlauf gelöscht')}" style="width:100%;background:transparent;border:1px solid var(--rd);color:var(--rd);border-radius:8px;padding:11px;font-family:var(--mo);font-size:12px;font-weight:600;cursor:pointer;">🗑 Alle Buchungen löschen</button>
+    </div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="bnav">
+  <button class="bn active" id="bn-home" onclick="goP('home')"><span class="bn-i">💶</span>Konto</button>
+  <button class="bn" id="bn-kal" onclick="goP('kal')"><span class="bn-i">📅</span>Kalender</button>
+  <button class="bn" id="bn-set" onclick="goP('set')"><span class="bn-i">⚙️</span>Einstellungen</button>
+</nav>
+
+<!-- TAG MODAL -->
+<div class="modal-bg" id="modalBg" onclick="if(event.target===this)closeMo()">
+  <div class="modal">
+    <div class="mh"></div>
+    <div class="md" id="moDt"></div>
+    <div class="typ-grid">
+      <div class="tb t-spaet" onclick="mSel('spaet')">🌆<br>SPÄT<br><span style="font-size:9px;opacity:.7;">8h</span></div>
+      <div class="tb t-fn" onclick="mSel('fn')">🌅🌙<br>F/N<br><span style="font-size:9px;opacity:.7;">16h</span></div>
+      <div class="tb t-frei" onclick="mSel('frei')">💤<br>FREI</div>
+      <div class="tb t-urlaub" onclick="mSel('urlaub')">🌴<br>URLAUB</div>
+      <div class="tb t-krank" onclick="mSel('krank')">🤒<br>KRANK</div>
+      <div class="tb t-lehrgang" onclick="mSel('lehrgang')">📚<br>LEHRGANG</div>
+      <div class="tb t-beton" onclick="mSel('beton')">🔶<br>BETON</div>
+      <div class="tb t-wunsch" onclick="mSel('wunsch')">📋<br>WUNSCH</div>
+      <div class="tb t-feiertag" onclick="mSel('feiertag')">🎉<br>FEIERTAG</div>
+    </div>
+    <input class="notiz-inp" type="text" id="moNotiz" placeholder="Notiz...">
+    <button class="btn-sp" onclick="saveMo()">✓ Speichern</button>
+    <button class="btn-rs" onclick="resetMo()">↩ Tag zurücksetzen</button>
+  </div>
+</div>
+
+<div class="toast" id="toastEl"></div>
+
+<script>
+const MDE=['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+
+const FT={
+  "2026-01-01":"Neujahr","2026-04-03":"Karfreitag","2026-04-05":"Ostersonntag",
+  "2026-04-06":"Ostermontag","2026-05-01":"Tag der Arbeit","2026-05-14":"Christi Himmelfahrt",
+  "2026-05-24":"Pfingstsonntag","2026-05-25":"Pfingstmontag","2026-06-04":"Fronleichnam",
+  "2026-10-03":"Tag der Deutschen Einheit","2026-10-31":"Reformationstag",
+  "2026-11-01":"Allerheiligen","2026-12-25":"1. Weihnachtstag","2026-12-26":"2. Weihnachtstag"
+};
+
+const PLAN={
+  "2026-01-03":{t:"spaet"},"2026-01-04":{t:"fn"},
+  "2026-01-07":{t:"spaet"},"2026-01-08":{t:"fn"},
+  "2026-01-11":{t:"spaet"},"2026-01-12":{t:"fn"},
+  "2026-01-15":{t:"spaet"},"2026-01-16":{t:"fn"},
+  "2026-01-19":{t:"spaet"},"2026-01-20":{t:"fn"},
+  "2026-01-23":{t:"spaet"},"2026-01-24":{t:"fn"},
+  "2026-01-27":{t:"spaet"},"2026-01-28":{t:"fn"},
+  "2026-01-31":{t:"spaet"},
+  "2026-02-01":{t:"fn"},
+  "2026-02-04":{t:"spaet"},"2026-02-05":{t:"fn"},
+  "2026-02-08":{t:"spaet"},"2026-02-09":{t:"fn"},
+  "2026-02-12":{t:"spaet"},"2026-02-13":{t:"fn"},
+  "2026-02-16":{t:"spaet"},"2026-02-17":{t:"fn"},
+  "2026-02-20":{t:"spaet"},"2026-02-21":{t:"fn"},
+  "2026-02-24":{t:"spaet"},"2026-02-25":{t:"fn"},
+  "2026-02-28":{t:"spaet"},
+  "2026-03-01":{t:"fn"},
+  "2026-03-04":{t:"spaet"},"2026-03-05":{t:"fn"},
+  "2026-03-08":{t:"spaet"},"2026-03-09":{t:"fn"},
+  "2026-03-12":{t:"spaet"},"2026-03-13":{t:"fn"},
+  "2026-03-16":{t:"spaet"},"2026-03-17":{t:"fn"},
+  "2026-03-20":{t:"spaet"},"2026-03-21":{t:"fn"},
+  "2026-03-24":{t:"spaet"},"2026-03-25":{t:"fn"},
+  "2026-03-28":{t:"spaet"},"2026-03-29":{t:"fn"},
+  "2026-04-01":{t:"spaet"},"2026-04-02":{t:"fn"},
+  "2026-04-05":{t:"spaet"},"2026-04-06":{t:"fn"},
+  "2026-04-09":{t:"spaet"},"2026-04-10":{t:"fn"},
+  "2026-04-13":{t:"spaet"},"2026-04-14":{t:"fn"},
+  "2026-04-17":{t:"spaet"},"2026-04-18":{t:"fn"},
+  "2026-04-21":{t:"spaet"},"2026-04-22":{t:"fn"},
+  "2026-04-25":{t:"spaet"},"2026-04-26":{t:"fn"},
+  "2026-04-29":{t:"spaet"},"2026-04-30":{t:"fn"},
+  "2026-05-03":{t:"spaet"},"2026-05-04":{t:"fn"},
+  "2026-05-07":{t:"spaet"},"2026-05-08":{t:"fn"},
+  "2026-05-11":{t:"spaet"},"2026-05-12":{t:"fn"},
+  "2026-05-15":{t:"spaet"},"2026-05-16":{t:"fn"},
+  "2026-05-19":{t:"spaet"},"2026-05-20":{t:"fn"},
+  "2026-05-23":{t:"spaet"},"2026-05-24":{t:"fn"},
+  "2026-05-27":{t:"spaet"},"2026-05-28":{t:"fn"},
+  "2026-05-31":{t:"spaet"},
+  "2026-06-01":{t:"fn"},
+  "2026-06-04":{t:"spaet"},"2026-06-05":{t:"fn"},
+  "2026-06-08":{t:"spaet"},"2026-06-09":{t:"fn"},
+  "2026-06-12":{t:"spaet"},"2026-06-13":{t:"fn"},
+  "2026-06-16":{t:"spaet"},"2026-06-17":{t:"fn"},
+  "2026-06-20":{t:"spaet"},"2026-06-21":{t:"fn"},
+  "2026-06-24":{t:"spaet"},"2026-06-25":{t:"fn"},
+  "2026-06-28":{t:"spaet"},"2026-06-29":{t:"fn"},
+  "2026-07-02":{t:"spaet"},"2026-07-03":{t:"fn"},
+  "2026-07-06":{t:"spaet"},"2026-07-07":{t:"fn"},
+  "2026-07-10":{t:"spaet"},"2026-07-11":{t:"fn"},
+  "2026-07-14":{t:"spaet"},"2026-07-15":{t:"fn"},
+  "2026-07-18":{t:"spaet"},"2026-07-19":{t:"fn"},
+  "2026-07-22":{t:"spaet"},"2026-07-23":{t:"fn"},
+  "2026-07-26":{t:"spaet"},"2026-07-27":{t:"fn"},
+  "2026-07-30":{t:"spaet"},"2026-07-31":{t:"fn"},
+  "2026-08-03":{t:"spaet"},"2026-08-04":{t:"fn"},
+  "2026-08-07":{t:"spaet"},"2026-08-08":{t:"fn"},
+  "2026-08-11":{t:"spaet"},"2026-08-12":{t:"fn"},
+  "2026-08-15":{t:"spaet"},"2026-08-16":{t:"fn"},
+  "2026-08-19":{t:"spaet"},"2026-08-20":{t:"fn"},
+  "2026-08-23":{t:"spaet"},"2026-08-24":{t:"fn"},
+  "2026-08-27":{t:"spaet"},"2026-08-28":{t:"fn"},
+  "2026-08-31":{t:"spaet"},
+  "2026-09-01":{t:"fn"},
+  "2026-09-04":{t:"spaet"},"2026-09-05":{t:"fn"},
+  "2026-09-08":{t:"spaet"},"2026-09-09":{t:"fn"},
+  "2026-09-12":{t:"spaet"},"2026-09-13":{t:"fn"},
+  "2026-09-16":{t:"spaet"},"2026-09-17":{t:"fn"},
+  "2026-09-20":{t:"spaet"},"2026-09-21":{t:"fn"},
+  "2026-09-24":{t:"spaet"},"2026-09-25":{t:"fn"},
+  "2026-09-28":{t:"spaet"},"2026-09-29":{t:"fn"},
+  "2026-10-02":{t:"spaet"},"2026-10-03":{t:"fn"},
+  "2026-10-06":{t:"spaet"},"2026-10-07":{t:"fn"},
+  "2026-10-10":{t:"spaet"},"2026-10-11":{t:"fn"},
+  "2026-10-14":{t:"spaet"},"2026-10-15":{t:"fn"},
+  "2026-10-18":{t:"spaet"},"2026-10-19":{t:"fn"},
+  "2026-10-22":{t:"spaet"},"2026-10-23":{t:"fn"},
+  "2026-10-26":{t:"spaet"},"2026-10-27":{t:"fn"},
+  "2026-10-30":{t:"spaet"},"2026-10-31":{t:"fn"},
+  "2026-11-03":{t:"spaet"},"2026-11-04":{t:"fn"},
+  "2026-11-07":{t:"spaet"},"2026-11-08":{t:"fn"},
+  "2026-11-11":{t:"spaet"},"2026-11-12":{t:"fn"},
+  "2026-11-15":{t:"spaet"},"2026-11-16":{t:"fn"},
+  "2026-11-19":{t:"spaet"},"2026-11-20":{t:"fn"},
+  "2026-11-23":{t:"spaet"},"2026-11-24":{t:"fn"},
+  "2026-11-27":{t:"spaet"},"2026-11-28":{t:"fn"},
+  "2026-12-01":{t:"spaet"},"2026-12-02":{t:"fn"},
+  "2026-12-05":{t:"spaet"},"2026-12-06":{t:"fn"},
+  "2026-12-09":{t:"spaet"},"2026-12-10":{t:"fn"},
+  "2026-12-13":{t:"spaet"},"2026-12-14":{t:"fn"},
+  "2026-12-17":{t:"spaet"},"2026-12-18":{t:"fn"},
+  "2026-12-21":{t:"spaet"},"2026-12-22":{t:"fn"},
+  "2026-12-25":{t:"spaet"},"2026-12-26":{t:"fn"},
+  "2026-12-29":{t:"spaet"},"2026-12-30":{t:"fn"},
+  // Feiertage die sich mit Dienstplan kreuzen
+  "2026-04-05":{t:"feiertag",n:"Ostersonntag · Spät +8h"},
+  "2026-04-06":{t:"feiertag",n:"Ostermontag · F/N +10h"},
+  "2026-05-24":{t:"feiertag",n:"Pfingstsonntag · F/N +10h"},
+  "2026-06-04":{t:"feiertag",n:"Fronleichnam · Spät +8h"},
+  "2026-10-03":{t:"feiertag",n:"Tag d. Einheit · F/N +10h"},
+  "2026-10-31":{t:"feiertag",n:"Reformationstag · F/N +10h"},
+  "2026-12-25":{t:"feiertag",n:"1. Weihnachtstag · Spät +8h"},
+  "2026-12-26":{t:"feiertag",n:"2. Weihnachtstag · F/N +10h"},
+};
+
+// ══ STATE ══
+let S={
+  konto:{da1:10.25, da2:2.65, url:31, meh:10, ft:38},
+  uJ:27,
+  buchungen:[],
+  kalTage:{},
+  da1months:[],
+  vm:new Date().getMonth(), vy:new Date().getFullYear()
+};
+
+let selKon=null, selPM='+', moDate=null, moTyp=null;
+
+function load(){
+  const r=localStorage.getItem('bka_v3');if(!r)return;
+  const p=JSON.parse(r);
+  if(p.konto) S.konto={...S.konto,...p.konto};
+  if(p.uJ) S.uJ=p.uJ;
+  S.buchungen=p.buchungen||[];
+  S.kalTage=p.kalTage||{};
+  S.da1months=p.da1months||[];
+}
+function save(){
+  localStorage.setItem('bka_v3',JSON.stringify({
+    konto:S.konto, uJ:S.uJ,
+    buchungen:S.buchungen, kalTage:S.kalTage, da1months:S.da1months
+  }));
+}
+
+// DA1 Monate auto-gutschreiben
+function applyDA1Months(){
+  const now=new Date();
+  const cur=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
+  S.da1months.forEach(m=>{
+    if(m.month<cur && !m.applied){
+      S.konto.da1+=m.value;
+      m.applied=true;
+    }
+  });
+}
+
+// ══ SCHNELL BUCHEN ══
+const SCHNELL_MAP={
+  spaet:{konto:'da2', wert:10/60, sign:'+', label:'Spät-Schicht', icon:'🌆'},
+  fn:{konto:'da2', wert:20/60, sign:'+', label:'Früh+Nacht', icon:'🌅🌙'},
+  turn:{konto:'da2', wert:0.5, sign:'+', label:'Ganzer Turn (Spät+F/N)', icon:'🔄'},
+  urlaub:{konto:'url', wert:1, sign:'-', label:'Urlaub', icon:'🌴'},
+  krank:{konto:null, wert:0, sign:'+', label:'Krank', icon:'🤒'},
+  krank_spaet:{konto:null, wert:0, sign:'+', label:'Spät Krank (kein DA2)', icon:'🌆🤒'},
+  krank_fn:   {konto:null, wert:0, sign:'+', label:'F/N Krank (kein DA2)',   icon:'🌅🌙🤒'},
+  feiertag:{konto:'ft', wert:8, sign:'+', label:'Feiertag', icon:'🎉'},
+  ft_spaet:{konto:'ft', wert:8,  sign:'+', label:'Feiertag Spät (+8h)',        icon:'🎉🌆'},
+  ft_fn:   {konto:'ft', wert:10, sign:'+', label:'Feiertag Früh+Nacht (+10h)', icon:'🎉🌅'},
+  ft_nacht:{konto:'ft', wert:6,  sign:'+', label:'Feiertag Nacht ab 0h (+6h)', icon:'🎉🌙'},
+  mehrarbeit:{konto:'meh', wert:null, sign:'+', label:'Mehrarbeit', icon:'⚡'},
+  lehrgang:{konto:'da2', wert:null, sign:'+', label:'Lehrgang DA2', icon:'📚'},
+  beton:{konto:'da1', wert:8, sign:'-', label:'Beton Abbau (8h)', icon:'🔶'},
+};
+
+function schnell(typ){
+  const m=SCHNELL_MAP[typ];
+  if(!m)return;
+  if(m.wert===null){
+    // Braucht Eingabe → manuell-Bereich befüllen
+    selKonto(m.konto);setPM(m.sign);
+    document.getElementById('manNotiz').value=m.label;
+    document.querySelector('.manuell-bereich').scrollIntoView({behavior:'smooth'});
+    toast('Bitte Stunden eingeben und buchen');
+    return;
+  }
+  if(!m.konto){toast(m.icon+' '+m.label+' eingetragen');return;}
+  buche(m.konto, m.sign, m.wert, m.label, m.icon);
+}
+
+function buche(konto, sign, wert, label, icon){
+  if(sign==='+') S.konto[konto]=+(S.konto[konto]+wert).toFixed(2);
+  else S.konto[konto]=+(S.konto[konto]-wert).toFixed(2);
+  const b={id:Date.now(), konto, sign, wert, label, icon, datum:new Date().toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'2-digit'})};
+  S.buchungen.unshift(b);
+  if(S.buchungen.length>50)S.buchungen=S.buchungen.slice(0,50);
+  save();renAll();
+  toast((sign==='+'?'✓ +':' ✓ −')+fmt(wert)+(konto==='url'?' Tage':' h')+' · '+label);
+}
+
+// ══ MANUELL ══
+function selKonto(k){
+  selKon=k;
+  document.querySelectorAll('.kw').forEach(el=>el.classList.remove('sel'));
+  document.getElementById('kw-'+k).classList.add('sel');
+  updBtn();
+  const units={url:'Tage'};
+  document.getElementById('manUnit').textContent=units[k]||'h';
+}
+function setPM(s){
+  selPM=s;
+  document.querySelectorAll('.pm-btn').forEach(b=>b.style.fontWeight=600);
+  document.querySelector('.pm-btn.'+(s==='+'?'plus':'minus')).style.background='rgba(255,255,255,.07)';
+  updBtn();
+}
+function updBtn(){document.getElementById('btnMan').disabled=!selKon;}
+
+function manuellBuchen(){
+  const wert=parseFloat(document.getElementById('manStd').value);
+  const notiz=document.getElementById('manNotiz').value||'Manuell';
+  if(!selKon||isNaN(wert)||wert<=0){toast('Bitte Konto und Stunden eingeben','err');return;}
+  const icons={da1:'🔵',da2:'🩵',ft:'🟣',meh:'🟠',url:'🟢'};
+  buche(selKon,selPM,wert,notiz,icons[selKon]||'📝');
+  document.getElementById('manStd').value='';
+  document.getElementById('manNotiz').value='';
+}
+
+// ══ DA1 MONATE ══
+function saveDA1M(){
+  const m=document.getElementById('da1Sel').value;
+  const v=parseFloat(document.getElementById('da1Val').value);
+  if(!m||isNaN(v)){toast('Bitte Monat und Stunden eingeben','err');return;}
+  S.da1months=S.da1months.filter(x=>x.month!==m);
+  S.da1months.push({month:m,value:v,applied:false});
+  S.da1months.sort((a,b)=>a.month.localeCompare(b.month));
+  applyDA1Months();
+  save();renAll();renDA1List();
+  document.getElementById('da1Val').value='';
+  toast('✓ DA1 gespeichert');
+}
+function delDA1M(m){
+  const entry=S.da1months.find(x=>x.month===m);
+  if(entry&&entry.applied) S.konto.da1=+(S.konto.da1-entry.value).toFixed(2);
+  S.da1months=S.da1months.filter(x=>x.month!==m);
+  save();renAll();renDA1List();
+}
+function mlbl(ym){const[y,mo]=ym.split('-');return MDE[parseInt(mo)-1]+' '+y;}
+
+function renDA1List(){
+  const el=document.getElementById('da1List');
+  if(!S.da1months.length){el.innerHTML='';return;}
+  const now=new Date();
+  const cur=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
+  el.innerHTML=S.da1months.map(m=>{
+    const past=m.month<cur||m.applied;
+    const col=m.value<0?'var(--rd)':past?'var(--ac)':'var(--mu)';
+    return`<div style="display:flex;align-items:center;justify-content:space-between;background:var(--sf2);border:1px solid var(--bd);border-radius:7px;padding:9px 11px;">
+      <span style="font-family:var(--mo);font-size:12px;font-weight:600;">${mlbl(m.month)}</span>
+      <span style="font-family:var(--mo);font-size:13px;font-weight:600;color:${col};">${m.value>=0?'+':''}${fmt(m.value)}h ${past?'✓':'⏳'}</span>
+      <button onclick="delDA1M('${m.month}')" style="background:none;border:none;color:var(--mu);cursor:pointer;font-size:17px;">×</button>
+    </div>`;
+  }).join('');
+}
+
+// ══ EINSTELLUNGEN KONTO ══
+function setKonto(){
+  S.konto.da1=+document.getElementById('setDA1').value||0;
+  S.konto.da2=+document.getElementById('setDA2').value||0;
+  S.konto.url=+document.getElementById('setUrl').value||0;
+  S.konto.meh=+document.getElementById('setMeh').value||0;
+  S.konto.ft=+document.getElementById('setFt').value||0;
+  S.uJ=+document.getElementById('setUJ').value||27;
+  save();renAll();
+}
+
+// ══ RENDER ══
+function renKonto(){
+  const k=S.konto;
+  document.getElementById('vDA1').textContent=fmt(k.da1);
+  document.getElementById('vDA2').textContent=fmt(k.da2);
+  document.getElementById('vMeh').textContent=fmt(k.meh);
+  document.getElementById('vUrl').textContent=Math.round(k.url);
+  document.getElementById('vFt').textContent=fmt(k.ft);
+
+  const pct=Math.max(0,Math.min(100,k.url/S.uJ*100));
+  const f=document.getElementById('urlFill');
+  f.style.width=pct+'%';
+  f.style.background=pct<20?'var(--rd)':pct<40?'var(--or)':'var(--gn)';
+
+  // Sync Einstellungsfelder
+  document.getElementById('setDA1').value=k.da1;
+  document.getElementById('setDA2').value=k.da2;
+  document.getElementById('setUrl').value=k.url;
+  document.getElementById('setMeh').value=k.meh;
+  document.getElementById('setFt').value=k.ft;
+  document.getElementById('setUJ').value=S.uJ;
+
+  // Warnung
+  const now=new Date();
+  const isJanMar=now.getMonth()<=2;
+  document.getElementById('warnEl').classList.toggle('show',isJanMar&&k.da1>40);
+
+  // Nächster Feiertag
+  const tod=ds(now);
+  const nf=Object.keys(FT).filter(d=>d>=tod).sort()[0];
+  if(nf){
+    const d=new Date(nf+'T12:00:00');
+    document.getElementById('naechFt').textContent=
+      d.toLocaleDateString('de-DE',{day:'2-digit',month:'short'})+' · '+FT[nf];
+  }
+}
+
+function renVerlauf(){
+  const el=document.getElementById('verlauf');
+  if(!S.buchungen.length){el.innerHTML='<div class="empty">Noch keine Buchungen</div>';return;}
+  el.innerHTML=S.buchungen.slice(0,20).map(b=>{
+    const pos=b.sign==='+';
+    const kontoN={da1:'DA1',da2:'DA2',ft:'FT-Std',meh:'Mehrarbeit',url:'Urlaub'}[b.konto]||b.konto||'—';
+    const unit=b.konto==='url'?' Tage':' h';
+    return`<div class="vi">
+      <span class="vi-icon">${b.icon||'📝'}</span>
+      <div class="vi-info">
+        <div class="vi-titel">${b.label}</div>
+        <div class="vi-datum">${b.datum} · ${kontoN}</div>
+      </div>
+      <span class="vi-wert ${pos?'pos':'neg'}">${pos?'+':'−'}${fmt(b.wert)}${unit}</span>
+      <button class="vi-del" onclick="delBuchung(${b.id})">×</button>
+    </div>`;
+  }).join('');
+}
+
+function delBuchung(id){
+  const b=S.buchungen.find(x=>x.id===id);
+  if(!b)return;
+  // Rückgängig
+  if(b.konto&&b.sign==='+') S.konto[b.konto]=+(S.konto[b.konto]-b.wert).toFixed(2);
+  if(b.konto&&b.sign==='-') S.konto[b.konto]=+(S.konto[b.konto]+b.wert).toFixed(2);
+  S.buchungen=S.buchungen.filter(x=>x.id!==id);
+  save();renAll();toast('Buchung rückgängig gemacht');
+}
+
+// ══ KALENDER ══
+function renKal(){
+  const y=S.vy,m=S.vm;
+  document.getElementById('mTit').textContent=MDE[m]+' '+y;
+  let dow=new Date(y,m,1).getDay();if(dow===0)dow=7;
+  const dim=new Date(y,m+1,0).getDate();
+  const diP=new Date(y,m,0).getDate();
+  const tod=ds(new Date());
+  const ym=y+'-'+String(m+1).padStart(2,'0');
+
+  let cells=[];
+  for(let i=dow-2;i>=0;i--)cells.push({d:diP-i,o:true,y,m:m-1});
+  for(let d=1;d<=dim;d++)cells.push({d,o:false,y,m});
+  let rem=cells.length%7;if(rem>0)for(let d=1;d<=7-rem;d++)cells.push({d,o:true,y,m:m+1});
+
+  const LABELS={spaet:'S',fn:'F/N',frei:'',urlaub:'Url',krank:'Kr',lehrgang:'Lhr',beton:'Btn',wunsch:'?',feiertag:'🎉'};
+
+  let html='';
+  cells.forEach(c=>{
+    const mo=((c.m%12)+12)%12;
+    const yr=c.m<0?c.y-1:c.m>11?c.y+1:c.y;
+    const date=yr+'-'+String(mo+1).padStart(2,'0')+'-'+String(c.d).padStart(2,'0');
+    const isT=date===tod;
+
+    // Nutzer-Änderung > Basisplan > Feiertag > frei
+    let d=S.kalTage[date]||(PLAN[date]?PLAN[date]:null);
+    if(!d&&FT[date])d={t:'feiertag'};
+    if(!d)d={t:'frei'};
+
+    let cl='cd t-'+d.t;
+    if(c.o)cl+=' oth';if(isT)cl+=' tod';
+    const lbl=LABELS[d.t]||'';
+    html+=`<div class="${cl}" onclick="openMo('${date}')">
+      <div class="dn">${c.d}</div>
+      ${lbl?`<div class="tag-typ">${lbl}</div>`:''}
+    </div>`;
+  });
+  document.getElementById('calGrid').innerHTML=html;
+
+  // Monatsstatistik
+  let sp=0,fn=0,ur=0,kr=0;
+  for(let d=1;d<=dim;d++){
+    const date=ym+'-'+String(d).padStart(2,'0');
+    const e=S.kalTage[date]||(PLAN[date])||null;
+    if(e){if(e.t==='spaet')sp++;if(e.t==='fn')fn++;if(e.t==='urlaub')ur++;if(e.t==='krank')kr++;}
+  }
+  document.getElementById('mStat').innerHTML=`
+    <div style="display:flex;flex-direction:column;gap:1px;"><span style="font-family:var(--mo);font-size:9px;color:var(--mu);text-transform:uppercase;">Spät</span><span style="font-family:var(--mo);font-size:15px;font-weight:600;color:#93c5fd;">${sp}</span></div>
+    <div style="display:flex;flex-direction:column;gap:1px;"><span style="font-family:var(--mo);font-size:9px;color:var(--mu);text-transform:uppercase;">F/N</span><span style="font-family:var(--mo);font-size:15px;font-weight:600;color:#bfdbfe;">${fn}</span></div>
+    <div style="display:flex;flex-direction:column;gap:1px;"><span style="font-family:var(--mo);font-size:9px;color:var(--mu);text-transform:uppercase;">Urlaub</span><span style="font-family:var(--mo);font-size:15px;font-weight:600;color:#fdba74;">${ur}</span></div>
+    <div style="display:flex;flex-direction:column;gap:1px;"><span style="font-family:var(--mo);font-size:9px;color:var(--mu);text-transform:uppercase;">Krank</span><span style="font-family:var(--mo);font-size:15px;font-weight:600;color:#86efac;">${kr}</span></div>`;
+}
+
+// ══ MODAL ══
+function openMo(date){
+  moDate=date;
+  const d=S.kalTage[date]||(PLAN[date])||{t:'frei'};
+  moTyp=d.t;
+  const dateObj=new Date(date+'T12:00:00');
+  const ftN=FT[date];
+  document.getElementById('moDt').textContent=
+    dateObj.toLocaleDateString('de-DE',{weekday:'long',day:'2-digit',month:'long'})+(ftN?' · 🎉 '+ftN:'');
+  document.getElementById('moNotiz').value=d.n||'';
+  document.querySelectorAll('.tb').forEach(b=>b.classList.remove('sel'));
+  const tb=document.querySelector('.tb.t-'+moTyp);if(tb)tb.classList.add('sel');
+  document.getElementById('modalBg').classList.add('open');
+}
+function mSel(t){moTyp=t;document.querySelectorAll('.tb').forEach(b=>b.classList.remove('sel'));const tb=document.querySelector('.tb.t-'+t);if(tb)tb.classList.add('sel');}
+function closeMo(){document.getElementById('modalBg').classList.remove('open');}
+function saveMo(){
+  if(!moDate||!moTyp)return;
+  const n=document.getElementById('moNotiz').value;
+  const altTag=S.kalTage[moDate]||(PLAN[moDate])||{t:'frei'};
+  const altTyp=altTag.t;
+
+  // Konto rückgängig wenn vorher Urlaub
+  if(altTyp==='urlaub' && moTyp!=='urlaub') S.konto.url=+(S.konto.url+1).toFixed(0);
+  // Konto abziehen wenn jetzt Urlaub
+  if(moTyp==='urlaub' && altTyp!=='urlaub') S.konto.url=+(S.konto.url-1).toFixed(0);
+
+  S.kalTage[moDate]={t:moTyp,n:n||undefined};
+  save();renAll();closeMo();
+  if(moTyp==='urlaub') toast('🌴 Urlaub eingetragen · Resturlaub: '+S.konto.url+' Tage');
+  else toast('✓ Gespeichert');
+}
+
+function resetMo(){
+  const altTag=S.kalTage[moDate];
+  if(altTag&&altTag.t==='urlaub') S.konto.url=+(S.konto.url+1).toFixed(0);
+  delete S.kalTage[moDate];
+  save();renAll();closeMo();toast('↩ Zurückgesetzt');
+}
+
+// ══ NAVIGATION ══
+function goP(name){
+  ['home','kal','set'].forEach(p=>{
+    document.getElementById('pg-'+p).classList.toggle('active',p===name);
+    document.getElementById('bn-'+p).classList.toggle('active',p===name);
+  });
+  if(name==='set'){renDA1List();}
+}
+function chM(dir){S.vm+=dir;if(S.vm>11){S.vm=0;S.vy++;}if(S.vm<0){S.vm=11;S.vy--;}renKal();}
+function goNow(){const n=new Date();S.vm=n.getMonth();S.vy=n.getFullYear();renKal();}
+
+function ds(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function fmt(h){const a=Math.abs(h||0);return(h<0?'-':'')+a.toFixed(2).replace('.',',');}
+
+function toast(msg,type){
+  const t=document.getElementById('toastEl');
+  t.textContent=msg;t.style.background=type==='err'?'var(--rd)':'var(--gn)';
+  t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2400);
+}
+
+function renAll(){renKonto();renVerlauf();renKal();}
+
+// ══ INIT ══
+load();
+applyDA1Months();
+document.getElementById('hdrDate').textContent=new Date().toLocaleDateString('de-DE',{day:'2-digit',month:'short'});
+renAll();renDA1List();
+</script>
+</body>
+</html>
